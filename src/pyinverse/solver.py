@@ -179,17 +179,8 @@ class BayesianAnalytical_sparse:
             n = self.loss.cov_prior.shape[0]
             idx = np.arange(n)
             diag_C = np.asarray(self.loss.cov_prior[idx, idx].todense()).ravel()
-            if True:
-                KC=(self.loss.K @ self.loss.cov_prior).todense()
-                diag_GKC = np.sum(self.gain * KC.T,axis=1)
-            
-            if False:
-                diag_GKC = np.zeros(n, dtype=np.float64)
-                for start in range(0, n, 1000):
-                    stop = min(start + 1000, n)
-                    KC_block = self.loss.K @ self.loss.cov_prior[:, start:stop]
-                    result = (self.gain[start:stop, :] * KC_block.T).sum(axis=1)
-                    diag_GKC[start:stop] = result.todense()
+            KC=(self.loss.K @ self.loss.cov_prior).todense()
+            diag_GKC = np.sum(self.gain * KC.T,axis=1)
             std= np.sqrt(diag_C - diag_GKC)
             print('finished calculating standard deviation of posterior')
             return std
